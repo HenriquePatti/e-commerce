@@ -1,0 +1,20 @@
+{
+  "name": "e-commerce-api-cadastro-produtos",
+  "version": "1.0.0",
+  "description": "API de cadastro de produtos em memória (Express + OpenAPI/Swagger)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": ["express", "e-commerce", "cadastro", "openapi"],
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "js-yaml": "^4.1.0",
+    "swagger-ui-express": "^5.0.1"
+  }
+}

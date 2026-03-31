@@ -1,0 +1,203 @@
+openapi: 3.0.3
+info:
+  title: API de Cadastro de Produtos — E-commerce
+  description: |
+    API REST para **cadastro** de produtos com validações alinhadas às histórias de usuário (documento v2).
+
+    **Categorias válidas** (`categoriaId`): `eletronicos`, `moveis`, `vestuario`, `alimentos`, `livros`.
+
+    **SKU:** 3 a 50 caracteres; apenas letras, números e hífen (`-`).
+
+    **Logística (US-8 — Opção B):** `peso`, `comprimento`, `largura` e `altura` são opcionais; se enviados, devem ser números ≥ 0.
+
+    Importação no Postman: **Import → Link** e use a URL `http://localhost:PORTA/openapi.json` (veja README).
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Servidor local (ajuste a porta se necessário)
+
+tags:
+  - name: Produtos
+    description: Cadastro de produtos
+
+paths:
+  /produtos:
+    post:
+      tags: [Produtos]
+      summary: Cadastrar produto
+      description: |
+        Cria um novo produto no catálogo em memória. Resposta **201** com o recurso e `id` gerado.
+        Erros de validação retornam **400** com objeto `errors` por campo. SKU duplicado retorna **409**.
+      operationId: cadastrarProduto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProdutoCadastroRequest"
+            examples:
+              minimo:
+                summary: Exemplo válido mínimo
+                value:
+                  nome: "Fone Bluetooth X1"
+                  preco: 99.9
+                  estoque: 42
+                  sku: "ELEC-FONE-001"
+                  categoriaId: "eletronicos"
+                  descricao: "Fone sem fio com cancelamento de ruído."
+                  imagens:
+                    - "https://example.com/img/fone-1.png"
+              completo:
+                summary: Com promoção e logística
+                value:
+                  nome: "Mesa de escritório"
+                  preco: 450
+                  estoque: 8
+                  sku: "MOV-MESA-02"
+                  categoriaId: "moveis"
+                  descricao: "Mesa 120x60 cm, madeira maciça."
+                  precoPromocional: 399.99
+                  imagens:
+                    - "https://example.com/mesa1.jpg"
+                    - "https://example.com/mesa2.jpg"
+                  status: "ativo"
+                  peso: 18.5
+                  comprimento: 120
+                  largura: 60
+                  altura: 75
+      responses:
+        "201":
+          description: Produto criado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProdutoResponse"
+        "400":
+          description: Erro de validação (US-09)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErroValidacao"
+              example:
+                message: "Erro de validação."
+                errors:
+                  nome: "Nome é obrigatório."
+                  preco: "Preço deve ser maior ou igual a 0,01."
+        "409":
+          description: SKU já existente (US-02)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErroConflito"
+              example:
+                message: "SKU já cadastrado."
+                errors:
+                  sku: "Já existe um produto com este SKU."
+
+components:
+  schemas:
+    ProdutoCadastroRequest:
+      type: object
+      required:
+        - nome
+        - preco
+        - estoque
+        - sku
+        - categoriaId
+        - descricao
+        - imagens
+      properties:
+        nome:
+          type: string
+          minLength: 2
+          maxLength: 200
+          description: Obrigatório; espaços nas extremidades são ignorados na validação.
+        preco:
+          type: number
+          format: double
+          minimum: 0.01
+          description: Preço regular (≥ 0,01).
+        estoque:
+          type: integer
+          minimum: 0
+        sku:
+          type: string
+          minLength: 3
+          maxLength: 50
+          pattern: '^[a-zA-Z0-9-]+$'
+        categoriaId:
+          type: string
+          enum:
+            - eletronicos
+            - moveis
+            - vestuario
+            - alimentos
+            - livros
+        descricao:
+          type: string
+          maxLength: 255
+        precoPromocional:
+          type: number
+          format: double
+          minimum: 0.01
+          nullable: true
+          description: Opcional; se informado, não pode ser maior que `preco`.
+        imagens:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: string
+            format: uri
+            description: URL http ou https
+        status:
+          type: string
+          enum: [rascunho, ativo, inativo]
+          description: Opcional; padrão `rascunho` se omitido.
+        peso:
+          type: number
+          minimum: 0
+          description: Opcional (US-08 Opção B).
+        comprimento:
+          type: number
+          minimum: 0
+        largura:
+          type: number
+          minimum: 0
+        altura:
+          type: number
+          minimum: 0
+
+    ProdutoResponse:
+      allOf:
+        - $ref: "#/components/schemas/ProdutoCadastroRequest"
+        - type: object
+          required: [id]
+          properties:
+            id:
+              type: string
+              format: uuid
+
+    ErroValidacao:
+      type: object
+      required: [message, errors]
+      properties:
+        message:
+          type: string
+          example: Erro de validação.
+        errors:
+          type: object
+          additionalProperties:
+            type: string
+
+    ErroConflito:
+      type: object
+      required: [message, errors]
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
+          additionalProperties:
+            type: string
