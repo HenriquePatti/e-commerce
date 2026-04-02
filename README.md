@@ -2,7 +2,7 @@
 
 Aplicação **Node.js** com **Express** que expõe apenas a operação de **cadastro de produtos**, com dados mantidos **em memória** (sem banco de dados). O projeto atende ao escopo do **Desafio #4** (M2.0 — API de cadastro com validações) e segue as regras descritas nas histórias de usuário em [docs/historias-usuario-cadastro-produto-v2.md](docs/historias-usuario-cadastro-produto-v2.md).
 
-Neste repositório **não há suíte de testes automatizados implementada**; os cenários sugeridos no documento de histórias podem ser executados manualmente via Swagger ou Postman.
+Há **testes automatizados** (Mocha, Chai, Supertest); use `npm test` (funciona em **Windows, macOS e Linux** via `cross-env`). Os demais cenários do documento de histórias podem ainda ser exercidos manualmente via Swagger ou Postman.
 
 ## Histórias de usuário
 
@@ -19,6 +19,7 @@ As regras de negócio e critérios de aceite (nome, preço, SKU, categoria, desc
 | js-yaml           | Leitura do arquivo OpenAPI               |
 | swagger-ui-express| Interface Swagger UI em `/api-docs`      |
 | OpenAPI 3         | Contrato da API (YAML + JSON em runtime)|
+| cross-env         | `NODE_ENV` nos scripts de teste em qualquer SO   |
 
 ## Estrutura de pastas
 
@@ -75,7 +76,19 @@ e-commerce/
    npm run dev
    ```
 
-4. **Porta:** por padrão o serviço sobe em `http://localhost:3000`. Para outra porta:
+4. **Testes (mesmo comando em Windows, macOS e Linux):**
+
+   ```bash
+   npm test
+   ```
+
+   Relatório HTML (Mochawesome):
+
+   ```bash
+   npm run test:report
+   ```
+
+5. **Porta:** por padrão o serviço sobe em `http://localhost:3000`. Para outra porta:
 
    ```bash
    PORT=4000 npm start

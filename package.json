@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "test": "NODE_ENV=test mocha",
-    "test:report": "NODE_ENV=test mocha --reporter mochawesome --reporter-options reportDir=mochawesome-report,reportFilename=index,overwrite=true"
+    "test": "cross-env NODE_ENV=test mocha",
+    "test:report": "cross-env NODE_ENV=test mocha --reporter mochawesome --reporter-options reportDir=mochawesome-report,reportFilename=index,overwrite=true"
   },
   "engines": {
     "node": ">=18"
@@ -25,6 +25,7 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "chai": "^4.5.0",
     "mocha": "^11.7.5",
     "mochawesome": "^7.1.4",
