@@ -5,16 +5,29 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node --watch src/server.js"
+    "dev": "node --watch src/server.js",
+    "test": "NODE_ENV=test mocha",
+    "test:report": "NODE_ENV=test mocha --reporter mochawesome --reporter-options reportDir=mochawesome-report,reportFilename=index,overwrite=true"
   },
   "engines": {
     "node": ">=18"
   },
-  "keywords": ["express", "e-commerce", "cadastro", "openapi"],
+  "keywords": [
+    "express",
+    "e-commerce",
+    "cadastro",
+    "openapi"
+  ],
   "license": "MIT",
   "dependencies": {
     "express": "^4.21.2",
     "js-yaml": "^4.1.0",
     "swagger-ui-express": "^5.0.1"
+  },
+  "devDependencies": {
+    "chai": "^4.5.0",
+    "mocha": "^11.7.5",
+    "mochawesome": "^7.1.4",
+    "supertest": "^7.2.2"
   }
 }
