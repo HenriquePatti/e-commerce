@@ -25,9 +25,10 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
     "chai": "^4.5.0",
-    "mocha": "^11.7.5",
+    "chai-http": "^5.1.2",
+    "cross-env": "^7.0.3",
+    "mocha": "^7.2.0",
     "mochawesome": "^7.1.4",
     "supertest": "^7.2.2"
   }
