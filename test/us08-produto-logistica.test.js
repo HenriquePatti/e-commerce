@@ -6,7 +6,7 @@ const memoryStore = require("../src/store/memoryStore");
 
 const PATH = "/api/v1/produtos";
 
-describe.only('US-08 — Campos logísticos (Opção B)', () => {
+describe('US-08 — Campos logísticos (Opção B)', () => {
     let app;
 
     beforeEach(() => {
