@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: API de Cadastro de Produtos — E-commerce
+  title: API de Cadastro de Produtos - E-commerce
   description: |
     API REST para **cadastro** de produtos com validações alinhadas às histórias de usuário (documento v2).
 
@@ -8,9 +8,9 @@ info:
 
     **SKU:** 3 a 50 caracteres; apenas letras, números e hífen (`-`).
 
-    **Logística (US-8 — Opção B):** `peso`, `comprimento`, `largura` e `altura` são opcionais; se enviados, devem ser números ≥ 0.
+    **Logística (US-08 - Opção A):** `peso`, `comprimento`, `largura` e `altura` são opcionais em conjunto; se qualquer um for enviado, todos passam a ser obrigatórios e devem ser números >= 0.
 
-    Importação no Postman: **Import → Link** e use a URL `http://localhost:PORTA/openapi.json` (veja README).
+    Importação no Postman: **Import -> Link** e use a URL `http://localhost:PORTA/openapi.json` (veja README).
   version: 1.0.0
 
 servers:
@@ -49,7 +49,7 @@ paths:
                   imagens:
                     - "https://example.com/img/fone-1.png"
               completo:
-                summary: Com promoção e logística
+                summary: Com promoção e logística completa
                 value:
                   nome: "Mesa de escritório"
                   preco: 450
@@ -84,6 +84,7 @@ paths:
                 errors:
                   nome: "Nome é obrigatório."
                   preco: "Preço deve ser maior ou igual a 0,01."
+                  comprimento: "comprimento é obrigatório quando qualquer campo logístico é informado."
         "409":
           description: SKU já existente (US-02)
           content:
@@ -117,7 +118,7 @@ components:
           type: number
           format: double
           minimum: 0.01
-          description: Preço regular (≥ 0,01).
+          description: Preço regular (>= 0,01).
         estoque:
           type: integer
           minimum: 0
@@ -158,16 +159,19 @@ components:
         peso:
           type: number
           minimum: 0
-          description: Opcional (US-08 Opção B).
+          description: Opcional em conjunto (US-08 Opção A). Se informado, exige os demais campos logísticos.
         comprimento:
           type: number
           minimum: 0
+          description: Opcional em conjunto (US-08 Opção A). Se informado, exige os demais campos logísticos.
         largura:
           type: number
           minimum: 0
+          description: Opcional em conjunto (US-08 Opção A). Se informado, exige os demais campos logísticos.
         altura:
           type: number
           minimum: 0
+          description: Opcional em conjunto (US-08 Opção A). Se informado, exige os demais campos logísticos.
 
     ProdutoResponse:
       allOf:

@@ -1,4 +1,5 @@
 const store = require("../store/memoryStore");
+const { validarLogistica } = require("./logistica.validator");
 
 const SKU_MIN = 3;
 const SKU_MAX = 50;
@@ -27,16 +28,18 @@ function isInteiroNaoNegativo(n) {
   return typeof n === "number" && Number.isFinite(n) && Number.isInteger(n) && n >= 0;
 }
 
-function isNumeroNaoNegativo(n) {
-  return typeof n === "number" && Number.isFinite(n) && n >= 0;
-}
-
 /**
- * Opção B (US-08): peso e dimensões opcionais; se enviados, cada um numérico ≥ 0.
+ * US-08 Opção A: se qualquer campo logístico for informado, todos se tornam obrigatórios
+ * e cada um deve ser numérico e >= 0.
  * @returns {{ errors: Record<string, string> }}
  */
 function validarCadastroProduto(body) {
   const errors = {};
+
+  const resultadoLogistica = validarLogistica(body);
+  if (!resultadoLogistica.valido) {
+    Object.assign(errors, resultadoLogistica.errors);
+  }
 
   const nome = trimStr(body?.nome);
   if (nome === undefined || nome === null || nome === "") {
@@ -112,17 +115,6 @@ function validarCadastroProduto(body) {
   if (statusRaw !== undefined && statusRaw !== null && statusRaw !== "") {
     if (!STATUS_VALORES.has(statusRaw)) {
       errors.status = "Status deve ser um dos valores: rascunho, ativo, inativo.";
-    }
-  }
-
-  const camposLogistica = ["peso", "comprimento", "largura", "altura"];
-  for (const campo of camposLogistica) {
-    if (body[campo] === undefined || body[campo] === null || body[campo] === "") continue;
-    const val = body[campo];
-    if (typeof val !== "number" || !Number.isFinite(val)) {
-      errors[campo] = `${campo} deve ser um número válido.`;
-    } else if (val < 0) {
-      errors[campo] = `${campo} deve ser maior ou igual a 0.`;
     }
   }
 
